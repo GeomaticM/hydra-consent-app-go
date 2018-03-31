@@ -1,0 +1,65 @@
+hash: ca5e8f4a06e74dcb4fed65e35eb05d0a102ffb24efd2370d64802306b1a0417b
+updated: 2018-03-28T09:14:42.614076621+08:00
+imports:
+- name: github.com/go-resty/resty
+  version: 9ac9c42358f7c3c69ac9f8610e8790d7c338e85d
+- name: github.com/golang/protobuf
+  version: bbd03ef6da3a115852eaf24c8a1c46aeb39aa175
+  subpackages:
+  - proto
+- name: github.com/gorilla/context
+  version: 1ea25387ff6f684839d82767c1733ff4d4d15d0a
+- name: github.com/gorilla/mux
+  version: 392c28fe23e1c45ddba891b0320b3b5df220beea
+- name: github.com/gorilla/securecookie
+  version: e59506cc896acb7f7bf732d4fdf5e25f7ccd8983
+- name: github.com/gorilla/sessions
+  version: ca9ada44574153444b00d3fd9c8559e4cc95f896
+- name: github.com/meatballhat/negroni-logrus
+  version: 31067281800f66f57548a7a32d9c6c5f963fef83
+- name: github.com/ory/common
+  version: ba06ec2f738cb3a55608657c2e998a1eef675423
+  subpackages:
+  - env
+- name: github.com/ory/hydra
+  version: 1d1b945494c14ac048d3d6040661c9bf7c761593
+  subpackages:
+  - sdk/go/hydra
+  - sdk/go/hydra/swagger
+- name: github.com/pkg/errors
+  version: 645ef00459ed84a119197bfb8d8205042c6df63d
+- name: github.com/sirupsen/logrus
+  version: f006c2ac4710855cf0f916dd6b77acf6b048dc6e
+- name: github.com/urfave/negroni
+  version: fde5e16d32adc7ad637e9cd9ad21d4ebc6192535
+- name: golang.org/x/crypto
+  version: 88942b9c40a4c9d203b82b3731787b672d6e809b
+  subpackages:
+  - ssh/terminal
+- name: golang.org/x/net
+  version: 6078986fec03a1dcc236c34816c71b0e05018fda
+  subpackages:
+  - context
+  - context/ctxhttp
+  - publicsuffix
+- name: golang.org/x/oauth2
+  version: fdc9e635145ae97e6c2cb777c48305600cf515cb
+  subpackages:
+  - clientcredentials
+  - internal
+- name: golang.org/x/sys
+  version: 13d03a9a82fba647c21a0ef8fba44a795d0f0835
+  subpackages:
+  - unix
+  - windows
+- name: google.golang.org/appengine
+  version: 540132eeda33c2b26cca331a6adfd50519cd29f7
+  subpackages:
+  - internal
+  - internal/base
+  - internal/datastore
+  - internal/log
+  - internal/remote_api
+  - internal/urlfetch
+  - urlfetch
+testImports: []

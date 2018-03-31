@@ -37,7 +37,7 @@ func main() {
 	client, err = hydra.NewSDK(&hydra.Configuration{
 		ClientID:     env.Getenv("HYDRA_CLIENT_ID", "demo"),
 		ClientSecret: env.Getenv("HYDRA_CLIENT_SECRET", "demo"),
-		EndpointURL:  env.Getenv("HYDRA_CLUSTER_URL", "http://localhost:4444"),
+		EndpointURL:  env.Getenv("HYDRA_CLUSTER_URL", "http://ory-hydra-example--hydra:4444"),
 		Scopes:       []string{"hydra.consent"},
 	})
 	if err != nil {
@@ -65,7 +65,7 @@ func main() {
 // page a user sees.
 func handleHome(w http.ResponseWriter, _ *http.Request) {
 	var config = client.GetOAuth2Config()
-	config.RedirectURL = "http://localhost:4445/callback"
+	config.RedirectURL = "http://localhost:3000/callback"
 	config.Scopes = []string{"offline", "openid"}
 
 	var authURL = client.GetOAuth2Config().AuthCodeURL(state) + "&nonce=" + state
@@ -89,14 +89,6 @@ func handleConsent(w http.ResponseWriter, r *http.Request) {
 		return
 	} else if response.StatusCode != http.StatusOK {
 		http.Error(w, errors.Wrapf(err, "Consent request endpoint gave status code %d but expected %d", response.StatusCode, http.StatusOK).Error(), http.StatusBadRequest)
-		return
-	}
-
-	// This helper checks if the user is already authenticated. If not, we
-	// redirect them to the login endpoint.
-	user := authenticated(r)
-	if user == "" {
-		http.Redirect(w, r, "/login?consent="+consentRequestID, http.StatusFound)
 		return
 	}
 
