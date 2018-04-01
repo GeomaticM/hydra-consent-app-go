@@ -64,12 +64,33 @@ func main() {
 // handles request at /home - a small page that let's you know what you can do in this app. Usually the first.
 // page a user sees.
 func handleHome(w http.ResponseWriter, _ *http.Request) {
-	var config = client.GetOAuth2Config()
-	config.RedirectURL = "http://localhost:3000/callback"
-	config.Scopes = []string{"offline", "openid"}
+	var authUrl = "http://localhost:9000/oauth2/auth"
+	var tokenUrl = "http://ory-hydra-example--hydra:4444/oauth2/token"
+	var clientId = "some-consumer"
+	var clientSecret = "consumer-secret"
+	var scopes = []string{"openid", "offline", "hydra.clients"}
+	var redirectUrl = "http://localhost:3000/callback"
 
-	var authURL = client.GetOAuth2Config().AuthCodeURL(state) + "&nonce=" + state
-	renderTemplate(w, "home.html", authURL)
+	conf := oauth2.Config{
+		ClientID:     clientId,
+		ClientSecret: clientSecret,
+		Endpoint: oauth2.Endpoint{
+			TokenURL: tokenUrl,
+			AuthURL:  authUrl,
+		},
+		RedirectURL: redirectUrl,
+		Scopes:      scopes,
+	}
+
+	state, err := sequence.RuneSequence(24, sequence.AlphaLower)
+	pkg.Must(err, "Could not generate random state: %s", err)
+
+	nonce, err := sequence.RuneSequence(24, sequence.AlphaLower)
+	pkg.Must(err, "Could not generate random state: %s", err)
+
+	authCodeUrl := conf.AuthCodeURL(string(state)) + "&nonce=" + string(nonce)
+
+	http.Redirect(w, r, authCodeUrl, http.StatusOK)
 }
 
 // After pressing "click here", the Authorize Code flow is performed and the user is redirected to Hydra. Next, Hydra
@@ -91,61 +112,48 @@ func handleConsent(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, errors.Wrapf(err, "Consent request endpoint gave status code %d but expected %d", response.StatusCode, http.StatusOK).Error(), http.StatusBadRequest)
 		return
 	}
-
-	// Apparently, the user is logged in. Now we check if we received POST
-	// request, or a GET request.
-	if r.Method == "POST" {
-		// Ok, apparently the user gave their consent!
-
-		// Parse the HTTP form - required by Go.
-		if err := r.ParseForm(); err != nil {
-			http.Error(w, errors.Wrap(err, "Could not parse form").Error(), http.StatusBadRequest)
-			return
-		}
-
-		// Let's check which scopes the user granted.
-		var grantedScopes = []string{}
-		for key := range r.PostForm {
-			// And add each scope to the list of granted scopes.
-			grantedScopes = append(grantedScopes, key)
-		}
-
-		// Ok, now we accept the consent request.
-		response, err := client.AcceptOAuth2ConsentRequest(consentRequestID, swagger.ConsentRequestAcceptance{
-			// The subject is a string, usually the user id.
-			Subject: user,
-
-			// The scopes our user granted.
-			GrantScopes: grantedScopes,
-
-			// Data that will be available on the token introspection and warden endpoints.
-			AccessTokenExtra: map[string]interface{}{"foo": "bar"},
-
-			// If we issue an ID token, we can set extra data for that id token here.
-			IdTokenExtra: map[string]interface{}{"foo": "baz"},
-		})
-		if err != nil {
-			http.Error(w, errors.Wrap(err, "The accept consent request endpoint encountered a network error").Error(), http.StatusInternalServerError)
-			return
-		} else if response.StatusCode != http.StatusNoContent {
-			http.Error(w, errors.Wrapf(err, "Accept consent request endpoint gave status code %d but expected %d", response.StatusCode, http.StatusNoContent).Error(), http.StatusInternalServerError)
-			return
-		}
-
-		// Redirect the user back to hydra, and append the consent response! If the user denies request you can
-		// either handle the error in the authentication endpoint, or redirect the user back to the original application
-		// with:
-		//
-		//   response, err := client.RejectOAuth2ConsentRequest(consentRequestId, payload)
-		http.Redirect(w, r, consentRequest.RedirectUrl, http.StatusFound)
+	// Parse the HTTP form - required by Go.
+	if err := r.ParseForm(); err != nil {
+		http.Error(w, errors.Wrap(err, "Could not parse form").Error(), http.StatusBadRequest)
 		return
 	}
 
-	// We received a get request, so let's show the html site where the user may give consent.
-	renderTemplate(w, "consent.html", struct {
-		*swagger.OAuth2ConsentRequest
-		ConsentRequestID string
-	}{OAuth2ConsentRequest: consentRequest, ConsentRequestID: consentRequestID})
+	// Let's check which scopes the user granted.
+	var grantedScopes = []string{}
+	for key := range r.PostForm {
+		// And add each scope to the list of granted scopes.
+		grantedScopes = append(grantedScopes, key)
+	}
+
+	// Ok, now we accept the consent request.
+	response, err = client.AcceptOAuth2ConsentRequest(consentRequestID, swagger.ConsentRequestAcceptance{
+		// The subject is a string, usually the user id.
+		Subject: "wanong",
+
+		// The scopes our user granted.
+		GrantScopes: grantedScopes,
+
+		// Data that will be available on the token introspection and warden endpoints.
+		AccessTokenExtra: map[string]interface{}{"foo": "bar"},
+
+		// If we issue an ID token, we can set extra data for that id token here.
+		IdTokenExtra: map[string]interface{}{"foo": "baz"},
+	})
+	if err != nil {
+		http.Error(w, errors.Wrap(err, "The accept consent request endpoint encountered a network error").Error(), http.StatusInternalServerError)
+		return
+	} else if response.StatusCode != http.StatusNoContent {
+		http.Error(w, errors.Wrapf(err, "Accept consent request endpoint gave status code %d but expected %d", response.StatusCode, http.StatusNoContent).Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Redirect the user back to hydra, and append the consent response! If the user denies request you can
+	// either handle the error in the authentication endpoint, or redirect the user back to the original application
+	// with:
+	//
+	//   response, err := client.RejectOAuth2ConsentRequest(consentRequestId, payload)
+	http.Redirect(w, r, consentRequest.RedirectUrl, http.StatusFound)
+	return
 }
 
 // The user hits this endpoint if not authenticated. In this example, they can sign in with the credentials
