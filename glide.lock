@@ -1,10 +1,18 @@
 hash: ca5e8f4a06e74dcb4fed65e35eb05d0a102ffb24efd2370d64802306b1a0417b
-updated: 2018-03-28T09:14:42.614076621+08:00
+updated: 2018-04-01T22:34:17.195609915+08:00
 imports:
+- name: github.com/asaskevich/govalidator
+  version: 7d2e70ef918f16bd6455529af38304d6d025c952
+- name: github.com/davecgh/go-spew
+  version: 6d212800a42e8ab5c146b8ace3490ee17e5225f9
+  subpackages:
+  - spew
+- name: github.com/dgrijalva/jwt-go
+  version: 06ea1031745cb8b3dab3f6a236daf2b0aa468b7e
 - name: github.com/go-resty/resty
   version: 9ac9c42358f7c3c69ac9f8610e8790d7c338e85d
 - name: github.com/golang/protobuf
-  version: bbd03ef6da3a115852eaf24c8a1c46aeb39aa175
+  version: e09c5db296004fbe3f74490e84dcd62c3c5ddb1b
   subpackages:
   - proto
 - name: github.com/gorilla/context
@@ -15,29 +23,67 @@ imports:
   version: e59506cc896acb7f7bf732d4fdf5e25f7ccd8983
 - name: github.com/gorilla/sessions
   version: ca9ada44574153444b00d3fd9c8559e4cc95f896
+- name: github.com/gtank/cryptopasta
+  version: 1f550f6f2f69009f6ae57347c188e0a67cd4e500
+- name: github.com/hashicorp/golang-lru
+  version: 0fb14efe8c47ae851c0034ed7a448854d3d34cf3
+  subpackages:
+  - simplelru
 - name: github.com/meatballhat/negroni-logrus
   version: 31067281800f66f57548a7a32d9c6c5f963fef83
+- name: github.com/mohae/deepcopy
+  version: c48cc78d482608239f6c4c92a4abd87eb8761c90
 - name: github.com/ory/common
   version: ba06ec2f738cb3a55608657c2e998a1eef675423
   subpackages:
   - env
+- name: github.com/ory/fosite
+  version: 45128532dc4bbb40a56bf6250a58f9c5d57a9c7a
+  subpackages:
+  - handler/oauth2
+  - handler/openid
+  - storage
+  - token/hmac
+  - token/jwt
 - name: github.com/ory/hydra
   version: 1d1b945494c14ac048d3d6040661c9bf7c761593
   subpackages:
+  - pkg
+  - rand/sequence
   - sdk/go/hydra
   - sdk/go/hydra/swagger
+- name: github.com/ory/ladon
+  version: 73217e44ed7e4a6bbd44ae7dd858d11932f08cf8
+  subpackages:
+  - compiler
+  - manager/memory
+- name: github.com/ory/pagination
+  version: abd7ec33a01fdec119267449c8f3bad187f881f6
+- name: github.com/pborman/uuid
+  version: a97ce2ca70fa5a848076093f05e639a89ca34d06
 - name: github.com/pkg/errors
   version: 645ef00459ed84a119197bfb8d8205042c6df63d
+- name: github.com/pmezard/go-difflib
+  version: d8ed2627bdf02c080bf22230dbb337003b7aba2d
+  subpackages:
+  - difflib
 - name: github.com/sirupsen/logrus
   version: f006c2ac4710855cf0f916dd6b77acf6b048dc6e
+- name: github.com/stretchr/testify
+  version: 69483b4bd14f5845b5a1e55bca19e954e827f1d0
+  subpackages:
+  - assert
+  - require
 - name: github.com/urfave/negroni
   version: fde5e16d32adc7ad637e9cd9ad21d4ebc6192535
 - name: golang.org/x/crypto
-  version: 88942b9c40a4c9d203b82b3731787b672d6e809b
+  version: 12892e8c234f4fe6f6803f052061de9057903bb2
   subpackages:
+  - bcrypt
+  - blowfish
   - ssh/terminal
 - name: golang.org/x/net
-  version: 6078986fec03a1dcc236c34816c71b0e05018fda
+  version: b68f30494add4df6bd8ef5e82803f308e7f7c59c
   subpackages:
   - context
   - context/ctxhttp
@@ -48,12 +94,12 @@ imports:
   - clientcredentials
   - internal
 - name: golang.org/x/sys
-  version: 13d03a9a82fba647c21a0ef8fba44a795d0f0835
+  version: 378d26f46672a356c46195c28f61bdb4c0a781dd
   subpackages:
   - unix
   - windows
 - name: google.golang.org/appengine
-  version: 540132eeda33c2b26cca331a6adfd50519cd29f7
+  version: ad39d7fab7c60b2493fdc318c3d2cdb2128f92a4
   subpackages:
   - internal
   - internal/base

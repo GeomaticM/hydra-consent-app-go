@@ -10,6 +10,8 @@ import (
 	"github.com/gorilla/sessions"
 	negronilogrus "github.com/meatballhat/negroni-logrus"
 	"github.com/ory/common/env"
+	"github.com/ory/hydra/pkg"
+	"github.com/ory/hydra/rand/sequence"
 	"github.com/ory/hydra/sdk/go/hydra"
 	"github.com/ory/hydra/sdk/go/hydra/swagger"
 	"github.com/pkg/errors"
@@ -63,7 +65,7 @@ func main() {
 
 // handles request at /home - a small page that let's you know what you can do in this app. Usually the first.
 // page a user sees.
-func handleHome(w http.ResponseWriter, _ *http.Request) {
+func handleHome(w http.ResponseWriter, r *http.Request) {
 	var authUrl = "http://localhost:9000/oauth2/auth"
 	var tokenUrl = "http://ory-hydra-example--hydra:4444/oauth2/token"
 	var clientId = "some-consumer"
